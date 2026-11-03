@@ -64,6 +64,14 @@ final class restore_frontpage_activity_structure_step extends restore_activity_s
         $record = (object) $data;
         $oldid = (int) $record->id;
         unset($record->id);
+        $document=json_decode($record->documentjson,true,512,JSON_THROW_ON_ERROR);
+        $css=(new \local_frontpage\local\document\validator())->normalise_page_css($document['css']??'');
+        if($css!==''){
+            $context=\context::instance_by_id($this->task->get_contextid());
+            if(!has_capability('mod/frontpage:editcss',$context,$this->task->get_userid())){
+                throw new required_capability_exception($context,'mod/frontpage:editcss','nopermissions','');
+            }
+        }
         $record->pageid = $this->newpageid;
         $record->createdby = $this->get_mappingid('user', $record->createdby, 0);
         $record->publishedby = empty($record->publishedby) ? null

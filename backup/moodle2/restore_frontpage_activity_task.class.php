@@ -57,14 +57,6 @@ final class restore_frontpage_activity_task extends restore_activity_task {
             }
 
             $revision->documentjson = (new \local_frontpage\local\document\validator())->validate_and_normalise($documentjson);
-            $restored=json_decode($revision->documentjson,true);
-            if(trim((string)($restored['css']??''))!==''){
-                // Restore/copy uses its initiating principal, including asynchronous course copies.
-                $context=\local_frontpage\local\page_access::context($page);
-                if(!has_capability('mod/frontpage:editcss',$context,$this->get_userid())){
-                    throw new required_capability_exception($context,'mod/frontpage:editcss','nopermissions','');
-                }
-            }
             $DB->update_record('local_frontpage_revision', $revision);
             \local_frontpage\local\course_resource_manager::sync_revision(
                 (int) $revision->id,
