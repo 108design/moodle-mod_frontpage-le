@@ -21,7 +21,7 @@ if(!empty($page->publishedrevisionid)&&\local_frontpage\local\page_access::can_v
 }
 $event=\mod_frontpage\event\course_module_viewed::create(['objectid'=>$instance->id,'context'=>$context]);$event->trigger();
 echo $OUTPUT->header();echo $OUTPUT->heading(format_string($instance->name));
-if($canmanage){echo html_writer::link(\local_frontpage\local\url\page_url::get_edit_url($page),get_string('editcontent','mod_frontpage'),['class'=>'btn btn-secondary mb-4']);}
+if($canmanage){echo html_writer::div(\local_frontpage\output\authoring::link(\local_frontpage\local\url\page_url::get_edit_url($page),get_string('editcontent','mod_frontpage'),'t/edit'),'mb-4');}
 if($revision) {
     echo (new \local_frontpage\output\page_renderer($OUTPUT,$page,(int)$revision->id))->render($revision->documentjson);
     (new completion_info($course))->set_module_viewed($cm);
