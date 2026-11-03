@@ -1,4 +1,4 @@
-# 108design Frontpage Activity Software License
+# 108design Frontpage Course Activity Software License
 
 Copyright © 2026 Andreas Giesen <andreas@108design.com>. All rights reserved.
 
@@ -7,7 +7,7 @@ open-source license. The Software is licensed, not sold.
 
 ## 1. Definitions
 
-“Software” means this separately installable Frontpage Activity plugin distribution and its documentation,
+“Software” means this Frontpage Course Activity plugin distribution and its documentation,
 excluding Third-Party Components identified below. “Author” means Andreas
 Giesen. “Licensee” means the person or legal entity exercising rights under
 this license. “Internal Use” means use for the Licensee's own operations and does not include
@@ -23,8 +23,7 @@ included in this distribution is covered by this grant.
 ## 3. Beta and pre-release versions
 
 This distribution is an early beta. Beta and other pre-release versions may be
-incomplete, experimental, unstable or unsupported. Features, data formats,
-interfaces may change or be removed before a stable
+incomplete, experimental, unstable or unsupported. Features, data formats and interfaces may change or be removed before a stable
 release. No commitment is made that a particular feature will remain available.
 
 ## 4. Modification and contractors
@@ -120,8 +119,8 @@ identified with its applicable copyright and license notice.
 
 ## 8. Technical services
 
-The Software uses Moodle's local access controls, file storage and course APIs.
-This distribution does not require a 108design entitlement or activation service.
+The Software uses Moodle's local activity, access-control, file-storage and course APIs.
+This distribution requires no 108design account or activation.
 
 ## 9. Term and termination
 
@@ -139,7 +138,7 @@ are provided without contractual guarantees and without a promise of fitness for
 a particular purpose. Nothing in this license excludes or limits liability that
 cannot legally be excluded or limited, including liability for intent, gross
 negligence, injury to life, body or health, fraud, or mandatory product-liability
-law. 
+law.
 
 ## 11. Governing law and severability
 
