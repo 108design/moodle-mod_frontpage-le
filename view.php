@@ -14,11 +14,15 @@ if(optional_param('edit',0,PARAM_BOOL)&&$canmanage){redirect(\local_frontpage\lo
 $PAGE->set_url(new moodle_url('/mod/frontpage/view.php',['id'=>$id]));$PAGE->set_cm($cm,$course);$PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');$PAGE->set_title($instance->name);$PAGE->set_heading(format_string($course->fullname));
 if($canmanage){\local_frontpage\output\context_help::prepare('editor');}
+$revision=null;
+if(!empty($page->publishedrevisionid)&&\local_frontpage\local\page_access::can_view_published($page)){
+    $revision=\local_frontpage\local\service\factory::page_repository()->get_revision($page->id,$page->publishedrevisionid);
+    \local_frontpage\local\page_css::prepare($page,$revision);
+}
 $event=\mod_frontpage\event\course_module_viewed::create(['objectid'=>$instance->id,'context'=>$context]);$event->trigger();
 echo $OUTPUT->header();echo $OUTPUT->heading(format_string($instance->name));
 if($canmanage){echo html_writer::link(\local_frontpage\local\url\page_url::get_edit_url($page),get_string('editcontent','mod_frontpage'),['class'=>'btn btn-secondary mb-4']);}
-if(!empty($page->publishedrevisionid)&&\local_frontpage\local\page_access::can_view_published($page)) {
-    $revision=\local_frontpage\local\service\factory::page_repository()->get_revision($page->id,$page->publishedrevisionid);
+if($revision) {
     echo (new \local_frontpage\output\page_renderer($OUTPUT,$page,(int)$revision->id))->render($revision->documentjson);
     (new completion_info($course))->set_module_viewed($cm);
 } else {echo $OUTPUT->notification(get_string('notpublished','mod_frontpage'),'info');}
