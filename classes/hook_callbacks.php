@@ -1,19 +1,34 @@
 <?php
 /**
+ * Connect native Moodle hooks to the component runtime.
+ *
  * @package mod_frontpage
  * @copyright 2026 Andreas Giesen <andreas@108design.com>
  * @license 108design source-available software license; see LICENSE.md
  */
+
 namespace mod_frontpage;
 
-/** Reacts to completion changes in course activities referenced by Frontpages. */
+/**
+ * Reacts to completion changes in course activities referenced by Frontpages.
+ */
 final class hook_callbacks {
+    /**
+     * @var bool Updating.
+     */
     private static bool $updating = false;
 
-    /** Recalculate aggregate completion after a referenced course module changes for one learner. */
+    /**
+     * Recalculate aggregate completion after a referenced course module changes for one learner.
+     *
+     * @param \core\event\course_module_completion_updated $event Native Moodle event.
+     * @return void
+     */
     public static function course_module_completion_updated(
-            \core\event\course_module_completion_updated $event): void {
-        global $CFG; require_once($CFG->libdir . '/completionlib.php');
+        \core\event\course_module_completion_updated $event
+    ): void {
+        global $CFG;
+        require_once($CFG->libdir . '/completionlib.php');
         $cmid = (int) $event->contextinstanceid;
         $userid = (int) $event->relateduserid;
         if (self::$updating || $cmid <= 0 || $userid <= 0) {
@@ -30,8 +45,7 @@ final class hook_callbacks {
         self::$updating = true;
         try {
             foreach ($instances as $instance) {
-                $frontpagecm = get_coursemodule_from_instance('frontpage', $instance->id,
-                    $instance->course, false);
+                $frontpagecm = get_coursemodule_from_instance('frontpage', $instance->id, $instance->course, false);
                 if (!$frontpagecm || $frontpagecm->completion != COMPLETION_TRACKING_AUTOMATIC) {
                     continue;
                 }
@@ -43,21 +57,37 @@ final class hook_callbacks {
         }
     }
 
-    /** Recalculate all users when a referenced module's settings may have changed. */
+    /**
+     * Recalculate all users when a referenced module's settings may have changed.
+     *
+     * @param \core\event\course_module_updated $event Native Moodle event.
+     * @return void
+     */
     public static function course_module_updated(\core\event\course_module_updated $event): void {
         self::reset_referencing_instances((int) $event->objectid);
     }
 
-    /** Recalculate all users when a referenced module is removed. */
+    /**
+     * Recalculate all users when a referenced module is removed.
+     *
+     * @param \core\event\course_module_deleted $event Native Moodle event.
+     * @return void
+     */
     public static function course_module_deleted(\core\event\course_module_deleted $event): void {
         self::reset_referencing_instances((int) $event->objectid);
     }
 
+    /**
+     * Reset the referencing instances.
+     *
+     * @param int $cmid Course-module ID.
+     * @return void
+     */
     private static function reset_referencing_instances(int $cmid): void {
-        global $CFG; require_once($CFG->libdir . '/completionlib.php');
+        global $CFG;
+        require_once($CFG->libdir . '/completionlib.php');
         foreach (self::get_referencing_instances($cmid) as $instance) {
-            $frontpagecm = get_coursemodule_from_instance('frontpage', $instance->id,
-                $instance->course, false);
+            $frontpagecm = get_coursemodule_from_instance('frontpage', $instance->id, $instance->course, false);
             if (!$frontpagecm || $frontpagecm->completion != COMPLETION_TRACKING_AUTOMATIC) {
                 continue;
             }
@@ -65,6 +95,12 @@ final class hook_callbacks {
         }
     }
 
+    /**
+     * Return the referencing instances.
+     *
+     * @param int $cmid Course-module ID.
+     * @return array
+     */
     private static function get_referencing_instances(int $cmid): array {
         global $DB;
 

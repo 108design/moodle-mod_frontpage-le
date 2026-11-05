@@ -1,12 +1,20 @@
 <?php
 /**
+ * Native Moodle callbacks for Frontpage Course Activity.
+ *
  * @package mod_frontpage
  * @copyright 2026 Andreas Giesen <andreas@108design.com>
  * @license 108design source-available software license; see LICENSE.md
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-/** Declare Moodle feature support. */
+/**
+ * Declare Moodle feature support.
+ *
+ * @param string $feature Feature.
+ * @return mixed
+ */
 function frontpage_supports(string $feature): mixed {
     return match ($feature) {
         FEATURE_MOD_ARCHETYPE => MOD_ARCHETYPE_RESOURCE,
@@ -18,7 +26,13 @@ function frontpage_supports(string $feature): mixed {
     };
 }
 
-/** Add one bridge instance and its activity-owned Frontpage page. */
+/**
+ * Add one bridge instance and its activity-owned Frontpage page.
+ *
+ * @param stdClass $data Submitted or stored data.
+ * @param moodleform_mod|null $mform Native form receiving the controls.
+ * @return int
+ */
 function frontpage_add_instance(stdClass $data, ?moodleform_mod $mform = null): int {
     global $DB, $USER;
     $transaction = $DB->start_delegated_transaction();
@@ -29,11 +43,14 @@ function frontpage_add_instance(stdClass $data, ?moodleform_mod $mform = null): 
     $data->timemodified = $now;
     // Moodle's web lifecycle fills cm.instance only after add_instance returns. Bind it inside
     // this transaction before context-bound template/publication checks; never weaken owner checks.
-    $pendingcm = $DB->get_record_sql('SELECT cm.id, cm.instance FROM {course_modules} cm
+    $pendingcm = $DB->get_record_sql(
+        'SELECT cm.id, cm.instance FROM {course_modules} cm
         JOIN {modules} m ON m.id = cm.module
         WHERE cm.id = :cmid AND cm.course = :courseid AND m.name = :modulename',
         ['cmid' => (int) $data->coursemodule, 'courseid' => (int) $data->course,
-            'modulename' => 'frontpage'], MUST_EXIST);
+        'modulename' => 'frontpage'],
+        MUST_EXIST
+    );
     if (!empty($pendingcm->instance)) {
         throw new invalid_parameter_exception('The new Frontpage course module is already bound.');
     }
@@ -54,18 +71,29 @@ function frontpage_add_instance(stdClass $data, ?moodleform_mod $mform = null): 
     return $instanceid;
 }
 
-/** Update bridge metadata; the Frontpage page remains independently revisioned. */
+/**
+ * Update bridge metadata; the Frontpage page remains independently revisioned.
+ *
+ * @param stdClass $data Submitted or stored data.
+ * @param moodleform_mod|null $mform Native form receiving the controls.
+ * @return bool
+ */
 function frontpage_update_instance(stdClass $data, ?moodleform_mod $mform = null): bool {
     global $DB;
     $existing = $DB->get_record('frontpage', ['id' => $data->instance], '*', MUST_EXIST);
     $data->embedincourse = 0;
     $data->id = $data->instance;
     $data->timemodified = time();
-    $DB->set_field('local_frontpage_page', 'title', $data->name, ['id'=>$existing->pageid]);
+    $DB->set_field('local_frontpage_page', 'title', $data->name, ['id' => $existing->pageid]);
     return $DB->update_record('frontpage', $data);
 }
 
-/** Delete the bridge and only the page it owns. */
+/**
+ * Delete the bridge and only the page it owns.
+ *
+ * @param int $id Record ID.
+ * @return bool
+ */
 function frontpage_delete_instance(int $id): bool {
     global $DB;
     $instance = $DB->get_record('frontpage', ['id' => $id]);
@@ -83,12 +111,20 @@ function frontpage_delete_instance(int $id): bool {
     return true;
 }
 
-/** Provide course cache metadata. */
+/**
+ * Provide course cache metadata.
+ *
+ * @param stdClass $coursemodule Coursemodule.
+ * @return cached_cm_info|false
+ */
 function frontpage_get_coursemodule_info(stdClass $coursemodule): cached_cm_info|false {
     global $CFG, $DB;
     require_once($CFG->libdir . '/completionlib.php');
-    $instance = $DB->get_record('frontpage', ['id' => $coursemodule->instance],
-        'id,name,intro,introformat,completionallactivities,embedincourse');
+    $instance = $DB->get_record(
+        'frontpage',
+        ['id' => $coursemodule->instance],
+        'id,name,intro,introformat,completionallactivities,embedincourse'
+    );
     if (!$instance) {
         return false;
     }
@@ -104,7 +140,12 @@ function frontpage_get_coursemodule_info(stdClass $coursemodule): cached_cm_info
     return $info;
 }
 
-/** Recalculate completion after the activity-owned page is published. */
+/**
+ * Recalculate completion after the activity-owned page is published.
+ *
+ * @param stdClass $page Page record or native page context.
+ * @return void
+ */
 function frontpage_page_published(stdClass $page): void {
     global $CFG, $DB;
 
@@ -123,4 +164,3 @@ function frontpage_page_published(stdClass $page): void {
     }
     (new completion_info(get_course($instance->course)))->reset_all_state($cm);
 }
-

@@ -1,33 +1,67 @@
 <?php
 /**
+ * Native backup and restore integration for Frontpage Course Activity.
+ *
  * @package mod_frontpage
  * @copyright 2026 Andreas Giesen <andreas@108design.com>
  * @license 108design source-available software license; see LICENSE.md
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-/** Restores every activity with an independent page, revision ids, and file item ids. */
+/**
+ * Restores every activity with an independent page, revision ids, and file item ids.
+ */
 final class restore_frontpage_activity_structure_step extends restore_activity_structure_step {
+    /**
+     * @var ?int Newpageid.
+     */
     private ?int $newpageid = null;
+    /**
+     * @var array Ownedresources.
+     */
     public array $ownedresources = [];
+    /**
+     * @var ?int Olddraftrevisionid.
+     */
     private ?int $olddraftrevisionid = null;
+    /**
+     * @var ?int Oldpublishedrevisionid.
+     */
     private ?int $oldpublishedrevisionid = null;
 
+    /**
+     * Define the XML structure used by this native backup or restore step.
+     *
+     * @return array
+     */
     protected function define_structure(): array {
         return $this->prepare_activity_structure([
             new restore_path_element('frontpage', '/activity/frontpage'),
             new restore_path_element('frontpage_ownedpage', '/activity/frontpage/ownedpage'),
-            new restore_path_element('frontpage_ownedresource', '/activity/frontpage/ownedpage/ownedresources/ownedresource'),
+            new restore_path_element(
+                'frontpage_ownedresource',
+                '/activity/frontpage/ownedpage/ownedresources/ownedresource'
+            ),
+
             new restore_path_element('frontpage_revision', '/activity/frontpage/ownedpage/revisions/revision'),
         ]);
     }
 
+    /**
+     * Restore the native Frontpage activity record.
+     *
+     * @param array $data Submitted or stored data.
+     * @return void
+     */
     protected function process_frontpage(array $data): void {
         global $DB;
         $record = (object) $data;
         $oldid = $record->id;
         unset($record->id);
-        if (!empty($record->embedincourse)) {throw new restore_step_exception('frontpage_unsupported_display');}
+        if (!empty($record->embedincourse)) {
+            throw new restore_step_exception('frontpage_unsupported_display');
+        }
         $record->embedincourse = 0;
         $record->course = $this->get_courseid();
         $record->pageid = null;
@@ -37,13 +71,18 @@ final class restore_frontpage_activity_structure_step extends restore_activity_s
         $this->set_mapping('frontpage', $oldid, $newid, true);
     }
 
+    /**
+     * Restore the page owned by the native activity.
+     *
+     * @param array $data Submitted or stored data.
+     * @return void
+     */
     protected function process_frontpage_ownedpage(array $data): void {
         global $DB;
         $record = (object) $data;
         $oldid = (int) $record->id;
         $this->olddraftrevisionid = empty($record->draftrevisionid) ? null : (int) $record->draftrevisionid;
-        $this->oldpublishedrevisionid = empty($record->publishedrevisionid)
-            ? null : (int) $record->publishedrevisionid;
+        $this->oldpublishedrevisionid = empty($record->publishedrevisionid) ? null : (int) $record->publishedrevisionid;
         unset($record->id, $record->draftrevisionid, $record->publishedrevisionid);
         $record->ownercomponent = 'mod_frontpage';
         $record->ownerinstanceid = $this->get_new_parentid('frontpage');
@@ -54,22 +93,32 @@ final class restore_frontpage_activity_structure_step extends restore_activity_s
         $record->timecreated = $this->apply_date_offset($record->timecreated);
         $record->timemodified = $this->apply_date_offset($record->timemodified);
         $this->newpageid = $DB->insert_record('local_frontpage_page', $record);
-        $DB->set_field('frontpage', 'pageid', $this->newpageid,
-            ['id' => $this->get_new_parentid('frontpage')]);
+        $DB->set_field(
+            'frontpage',
+            'pageid',
+            $this->newpageid,
+            ['id' => $this->get_new_parentid('frontpage')]
+        );
         $this->set_mapping('local_frontpage_page', $oldid, $this->newpageid);
     }
 
+    /**
+     * Restore a page revision with its mapped ownership.
+     *
+     * @param array $data Submitted or stored data.
+     * @return void
+     */
     protected function process_frontpage_revision(array $data): void {
         global $DB;
         $record = (object) $data;
         $oldid = (int) $record->id;
         unset($record->id);
-        $document=json_decode($record->documentjson,true,512,JSON_THROW_ON_ERROR);
-        $css=(new \local_frontpage\local\document\validator())->normalise_page_css($document['css']??'');
-        if($css!==''){
-            $context=\context::instance_by_id($this->task->get_contextid());
-            if(!has_capability('mod/frontpage:editcss',$context,$this->task->get_userid())){
-                throw new required_capability_exception($context,'mod/frontpage:editcss','nopermissions','');
+        $document = json_decode($record->documentjson, true, 512, JSON_THROW_ON_ERROR);
+        $css = (new \local_frontpage\local\document\validator())->normalise_page_css($document['css'] ?? '');
+        if ($css !== '') {
+            $context = \context::instance_by_id($this->task->get_contextid());
+            if (!has_capability('mod/frontpage:editcss', $context, $this->task->get_userid())) {
+                throw new required_capability_exception($context, 'mod/frontpage:editcss', 'nopermissions', '');
             }
         }
         $record->pageid = $this->newpageid;
@@ -83,23 +132,37 @@ final class restore_frontpage_activity_structure_step extends restore_activity_s
         $this->set_mapping('local_frontpage_revision', $oldid, $newid, true);
     }
 
+    /**
+     * Restore one resource owned by the activity page.
+     *
+     * @param array $data Submitted or stored data.
+     * @return void
+     */
     protected function process_frontpage_ownedresource(array $data): void {
-        $data['createdby']=$this->get_mappingid('user',$data['createdby'],0);
-        $this->task->ownedresources[]=$data;
+        $data['createdby'] = $this->get_mappingid('user', $data['createdby'], 0);
+        $this->task->ownedresources[] = $data;
     }
+    /**
+     * Finish mapping restored page revisions, files and resources.
+     *
+     * @return void
+     */
     protected function after_execute(): void {
         global $DB;
         $this->add_related_files('mod_frontpage', 'intro', null);
         // Moodle matches file areas exactly; discover the annotated source areas and admit only revision-owned ones.
-        $annotatedareas = $DB->get_fieldset_select('backup_files_temp', 'DISTINCT filearea',
-            'backupid = :backupid AND component = :component', [
-                'backupid' => $this->get_restoreid(),
-                'component' => 'local_frontpage',
-            ]);
+        $annotatedareas = $DB->get_fieldset_select(
+            'backup_files_temp',
+            'DISTINCT filearea',
+            'backupid = :backupid AND component = :component',
+            [ 'backupid' => $this->get_restoreid(), 'component' => 'local_frontpage' ]
+        );
         $areas = array_values(array_unique(array_merge(
             \local_frontpage\local\revision_files::AREAS,
-            array_filter($annotatedareas,
-                [\local_frontpage\local\revision_files::class, 'is_hero_background_area'])
+            array_filter(
+                $annotatedareas,
+                [\local_frontpage\local\revision_files::class, 'is_hero_background_area']
+            )
         )));
         sort($areas, SORT_STRING);
         foreach ($areas as $area) {
@@ -116,6 +179,12 @@ final class restore_frontpage_activity_structure_step extends restore_activity_s
         }
     }
 
+    /**
+     * Return an unused page slug for the restored page.
+     *
+     * @param string $slug Stable URL slug.
+     * @return string
+     */
     private function unique_slug(string $slug): string {
         global $DB;
         $base = substr($slug . '-copy', 0, 240);
