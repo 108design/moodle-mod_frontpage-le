@@ -26,7 +26,7 @@ $PAGE->set_cm($cm, $course);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title($instance->name);
-$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_heading(format_string($instance->name));
 $publicactions = class_exists(\local_frontpage\output\public_page_actions::class)
     ? \local_frontpage\output\public_page_actions::prepare($page) : null;
 if ($canmanage && !$publicactions) {
@@ -43,7 +43,6 @@ if (!empty($page->publishedrevisionid) && \local_frontpage\local\page_access::ca
 $event = \mod_frontpage\event\course_module_viewed::create(['objectid' => $instance->id, 'context' => $context]);
 $event->trigger();
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($instance->name));
 if ($publicactions) {
     echo $publicactions->render($OUTPUT);
 } else if ($canmanage) {
