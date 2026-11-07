@@ -8,8 +8,8 @@
  */
 
 $string['pluginname'] = 'Frontpage Course Activity';
-$string['modulename'] = 'Frontpage';
-$string['modulenameplural'] = 'Frontpages';
+$string['modulename'] = 'Frontpage Course Activity';
+$string['modulenameplural'] = 'Frontpage Course Activities';
 $string['frontpagename'] = 'Activity name';
 $string['editcontent'] = 'Edit content';
 $string['completionallactivities'] = 'Require all activities and resources included on this Frontpage to be completed';
