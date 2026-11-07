@@ -27,7 +27,9 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title($instance->name);
 $PAGE->set_heading(format_string($course->fullname));
-if ($canmanage) {
+$publicactions = class_exists(\local_frontpage\output\public_page_actions::class)
+    ? \local_frontpage\output\public_page_actions::prepare($page) : null;
+if ($canmanage && !$publicactions) {
     \local_frontpage\output\context_help::prepare('editor');
 }
 $revision = null;
@@ -42,7 +44,10 @@ $event = \mod_frontpage\event\course_module_viewed::create(['objectid' => $insta
 $event->trigger();
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($instance->name));
-if ($canmanage) {
+if ($publicactions) {
+    echo $publicactions->render($OUTPUT);
+} else if ($canmanage) {
+    // The limited module can also be retained when upgrading the local plugin to the full edition.
     echo html_writer::div(
         \local_frontpage\output\authoring::link(
             \local_frontpage\local\url\page_url::get_edit_url($page),
@@ -53,11 +58,12 @@ if ($canmanage) {
     );
 }
 if ($revision) {
-    echo (
-        new \local_frontpage\output\page_renderer($OUTPUT, $page, (int)$revision->id)
-    )->render(
-        $revision->documentjson
-    );
+    $renderer = $publicactions
+        ? new \local_frontpage\output\page_renderer(
+            $OUTPUT, $page, (int)$revision->id, quickediturls: $publicactions->segment_urls()
+        )
+        : new \local_frontpage\output\page_renderer($OUTPUT, $page, (int)$revision->id);
+    echo $renderer->render($revision->documentjson);
     (new completion_info($course))->set_module_viewed($cm);
 } else {
     echo $OUTPUT->notification(get_string('notpublished', 'mod_frontpage'), 'info');
