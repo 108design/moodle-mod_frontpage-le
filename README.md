@@ -4,7 +4,7 @@ Build a course activity page with headings, Moodle rich text, static images and 
 
 ## Installation and editing
 
-Install Frontpage in `local/frontpage`, then install this plugin in `mod/frontpage`. Both components require Moodle 4.5 or later. The required Frontpage build is `2026010100` or newer.
+Install Frontpage in `local/frontpage`, then install this plugin in `mod/frontpage`. Both components require Moodle 4.5 or later. The required Frontpage build is `2026010108` or newer.
 
 Add **Frontpage** through Moodle’s activity chooser. Use **Edit Content** to build the page, save a draft and preview it. Choose **Publish** to make the draft available to learners. Later edits leave that publication visible until you publish again.
 

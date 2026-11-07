@@ -42,6 +42,9 @@ if (!empty($page->publishedrevisionid) && \local_frontpage\local\page_access::ca
 }
 $event = \mod_frontpage\event\course_module_viewed::create(['objectid' => $instance->id, 'context' => $context]);
 $event->trigger();
+if ($revision) {
+    (new completion_info($course))->set_module_viewed($cm);
+}
 echo $OUTPUT->header();
 if ($publicactions) {
     echo $publicactions->render($OUTPUT);
@@ -63,7 +66,6 @@ if ($revision) {
         )
         : new \local_frontpage\output\page_renderer($OUTPUT, $page, (int)$revision->id);
     echo $renderer->render($revision->documentjson);
-    (new completion_info($course))->set_module_viewed($cm);
 } else {
     echo $OUTPUT->notification(get_string('notpublished', 'mod_frontpage'), 'info');
 }

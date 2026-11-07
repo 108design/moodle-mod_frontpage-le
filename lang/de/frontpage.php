@@ -10,6 +10,7 @@
 $string['pluginname'] = 'Frontpage-Kursaktivität';
 $string['modulename'] = 'Frontpage Kursaktivität';
 $string['modulenameplural'] = 'Frontpage Kursaktivitäten';
+$string['pluginadministration'] = 'Frontpage-Administration';
 $string['frontpagename'] = 'Name der Aktivität';
 $string['editcontent'] = 'Inhalt bearbeiten';
 $string['completionallactivities'] = 'Alle auf dieser Frontpage eingebundenen Aktivitäten und Materialien müssen abgeschlossen sein';
