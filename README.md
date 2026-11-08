@@ -6,14 +6,18 @@
 
 Build a course activity page with headings, Moodle rich text, static images and Hero content, spacers and responsive grids. Course lists and references to activities in the same course use Moodle’s native access rules.
 
-<!--
 ## Screenshots
 
 <details>
 <summary>View screenshots</summary>
 
+![Course activity with the course index](docs/screenshots/course-activity-learner.jpg)
+
+![Activity editor and sidebar](docs/screenshots/course-activity-editor.jpg)
+
+![Compact activity editor action bar](docs/screenshots/course-activity-actionbar.jpg)
+
 </details>
--->
 
 ## Installation and editing
 
