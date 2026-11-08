@@ -1,23 +1,10 @@
-<p align="center">
-  <img src="docs/branding/logo.svg" alt="Frontpage Course Activity logo" width="125" height="125">
-</p>
-
-# Frontpage Course Activity LE
+# Frontpage Course Activity
 
 Build a course activity page with headings, Moodle rich text, static images and Hero content, spacers and responsive grids. Course lists and references to activities in the same course use Moodle’s native access rules.
 
-<!--
-## Screenshots
-
-<details>
-<summary>View screenshots</summary>
-
-</details>
--->
-
 ## Installation and editing
 
-Supports Moodle 4.5 through 5.3. Install [Frontpage](https://github.com/108design/moodle-local_frontpage-le) build `2026010108` or later first. Then download the [signed beta ZIP](https://github.com/108design/moodle-mod_frontpage-le/releases) and install it as `mod/frontpage`.
+Install Frontpage in `local/frontpage`, then install this plugin in `mod/frontpage`. Both components require Moodle 4.5 or later. The required Frontpage build is `2026010108` or newer.
 
 Add **Frontpage** through Moodle’s activity chooser. Use **Edit Content** to build the page, save a draft and preview it. Choose **Publish** to make the draft available to learners. Later edits leave that publication visible until you publish again.
 
