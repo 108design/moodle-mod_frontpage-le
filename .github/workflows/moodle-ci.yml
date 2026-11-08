@@ -67,7 +67,7 @@ jobs:
 
       - name: Add plugin dependencies
         run: |
-          moodle-plugin-ci add-plugin --branch v0.17.0-le-beta 108design/moodle-local_frontpage-le
+          moodle-plugin-ci add-plugin --branch v0.18.0-le-beta 108design/moodle-local_frontpage-le
 
       - name: Install fresh Moodle and plugin
         id: install
