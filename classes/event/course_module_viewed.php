@@ -1,4 +1,5 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
 /**
  * Event fired when a Frontpage bridge activity is viewed.
  *

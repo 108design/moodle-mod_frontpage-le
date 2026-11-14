@@ -1,4 +1,5 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
 /**
  * Completion rule aggregating Moodle completion of modules included on the published Frontpage.
  *
