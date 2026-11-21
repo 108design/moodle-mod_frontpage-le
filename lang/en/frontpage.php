@@ -1,4 +1,5 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
 /**
  * Course activity interface.
  *
@@ -19,17 +20,10 @@ $string['frontpage:addinstance'] = 'Add a Frontpage activity';
 $string['frontpage:view'] = 'View a Frontpage activity';
 $string['frontpage:managecontent'] = 'Manage Frontpage activity content';
 $string['frontpage:publishcontent'] = 'Publish activity content';
-$string['privacy:metadata'] = ('Page content and author attribution belong to local_frontpage. Moodle manages '
-    . 'course access, completion and activity introductions.');
+$string['privacy:metadata'] = 'Page content and author attribution belong to local_frontpage. Moodle manages course access, completion and activity introductions.';
 $string['notpublished'] = 'This page has not been published yet.';
 $string['missingreference'] = 'Select an activity available in this course.';
-$string['completionallactivities_help'] = ('The optional All Referenced Activities rule uses enabled references in the '
-    . 'current publication. References in a disabled Grid are excluded. Activities '
-    . 'without completion tracking are skipped. At least one tracked activity is '
-    . 'required. Missing or deleted references keep the rule incomplete. Hidden or '
-    . 'temporarily unavailable tracked activities still use their native completion '
-    . 'state. Completion with pass or fail counts as completed. Historical previews '
-    . 'do not award completion.');
+$string['completionallactivities_help'] = 'The optional All Referenced Activities rule uses enabled references in the current publication. References in a disabled Grid are excluded. Activities without completion tracking are skipped. At least one tracked activity is required. Missing or deleted references keep the rule incomplete. Hidden or temporarily unavailable tracked activities still use their native completion state. Completion with pass or fail counts as completed. Historical previews do not award completion.';
 
 $string['frontpage:editcss'] = 'Edit CSS for this Frontpage activity';
 
@@ -52,3 +46,12 @@ $string['updateguard_operation'] = 'This combination of installation actions is 
 $string['updateguard_failed'] = 'The update could not be verified. No installation was started.';
 $string['updateguard_back'] = 'Return to plugin overview';
 // End shared independent signed update protection.
+
+// Optional information before native package confirmation.
+$string['updateinfo_heading'] = 'Package information: {$a}';
+$string['updateinfo_verified'] = 'The embedded publisher record matches the installed release line.';
+$string['updateinfo_missing'] = 'This package has no embedded publisher verification record.';
+$string['updateinfo_line'] = 'This package identifies a different release line from the installed plugin.';
+$string['updateinfo_mismatch'] = 'The embedded publisher record could not be verified against the installed plugin\'s publisher information.';
+$string['updateinfo_unavailable'] = 'Publisher information for the selected package could not be read.';
+$string['updateinfo_choice'] = 'Review the package source and Moodle\'s validation details before continuing. Use "{$a}" below to cancel.';
