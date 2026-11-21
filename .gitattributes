@@ -22,6 +22,7 @@
 "/classes/local/admin_branding.php" -export-ignore -export-subst
 "/classes/local/restore_reference_mapper.php" -export-ignore -export-subst
 "/classes/local/update_guard.php" -export-ignore -export-subst
+"/classes/local/update_notice.php" -export-ignore -export-subst
 "/classes/privacy" -export-ignore -export-subst
 "/classes/privacy/provider.php" -export-ignore -export-subst
 "/db" -export-ignore -export-subst
@@ -34,6 +35,10 @@
 "/docs" export-ignore -export-subst
 "/docs/branding" export-ignore -export-subst
 "/docs/branding/logo.svg" export-ignore -export-subst
+"/docs/screenshots" export-ignore -export-subst
+"/docs/screenshots/course-activity-actionbar.jpg" export-ignore -export-subst
+"/docs/screenshots/course-activity-editor.jpg" export-ignore -export-subst
+"/docs/screenshots/course-activity-learner.jpg" export-ignore -export-subst
 "/index.php" -export-ignore -export-subst
 "/lang" -export-ignore -export-subst
 "/lang/de" -export-ignore -export-subst
@@ -47,11 +52,13 @@
 "/pix/icon.svg" -export-ignore -export-subst
 "/release-guard-policy.json" -export-ignore -export-subst
 "/release-manifest.json" -export-ignore -export-subst
+"/release-metadata.php" -export-ignore -export-subst
 "/release-signature.txt" -export-ignore -export-subst
 "/tests" -export-ignore -export-subst
 "/tests/generator" -export-ignore -export-subst
 "/tests/generator/lib.php" -export-ignore -export-subst
 "/tests/restore_reference_mapper_test.php" -export-ignore -export-subst
 "/update-guard.php" -export-ignore -export-subst
+"/update-notice.php" -export-ignore -export-subst
 "/version.php" -export-ignore -export-subst
 "/view.php" -export-ignore -export-subst
