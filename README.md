@@ -2,7 +2,7 @@
   <img src="docs/branding/logo.svg" alt="Frontpage Course Activity logo" width="125" height="125">
 </p>
 
-# Frontpage Course Activity LE
+# Frontpage Course Activity LE - Limited Beta Preview
 
 Build a course activity page with headings, Moodle rich text, static images and Hero content, spacers and responsive grids. Course lists and references to activities in the same course use Moodle’s native access rules.
 
